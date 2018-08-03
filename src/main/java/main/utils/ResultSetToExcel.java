@@ -3,6 +3,10 @@ package main.utils;
 import org.apache.commons.lang.exception.NestableException;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.usermodel.contrib.HSSFCellUtil;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.contrib.CellUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,6 +114,10 @@ public class ResultSetToExcel {
 
 	private void writeCell(HSSFRow row, int col, Object value, FormatType formatType, Short bgColor, HSSFFont font)
 			throws NestableException {
+		CellStyle cellStyle = workbook.createCellStyle();
+		CreationHelper createHelper = workbook.getCreationHelper();
+		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
+		
 		HSSFCell cell = HSSFCellUtil.createCell(row, col, null);
 		if (value == null) {
 			return;
@@ -127,38 +135,46 @@ public class ResultSetToExcel {
 			break;
 		case INTEGER:
 			cell.setCellValue(((Number) value).intValue());
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.DATA_FORMAT,
-					HSSFDataFormat.getBuiltinFormat(("#,##0")));
+//			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.DATA_FORMAT,	HSSFDataFormat.getBuiltinFormat(("#,##0")));
+			cell.setCellStyle(cellStyle);
 			break;
 		case FLOAT:
 			cell.setCellValue(((Number) value).doubleValue());
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.DATA_FORMAT,
+			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.DATA_FORMAT,
 					HSSFDataFormat.getBuiltinFormat(("#,##0.00")));
 			break;
 		case DATE:
 			cell.setCellValue((Timestamp) value);
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.DATA_FORMAT,
+			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.DATA_FORMAT,
 					HSSFDataFormat.getBuiltinFormat(("m/d/yy")));
 			break;
 		case MONEY:
 			cell.setCellValue(((Number) value).intValue());
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.DATA_FORMAT,
+			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.DATA_FORMAT,
 					format.getFormat("($#,##0.00);($#,##0.00)"));
 			break;
 		case PERCENTAGE:
 			cell.setCellValue(((Number) value).doubleValue());
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.DATA_FORMAT,
+			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.DATA_FORMAT,
 					HSSFDataFormat.getBuiltinFormat("0.00%"));
 		}
 
 		if (bgColor != null) {
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.FILL_FOREGROUND_COLOR, bgColor);
-			HSSFCellUtil.setCellStyleProperty(cell, workbook, HSSFCellUtil.FILL_PATTERN,
-					HSSFCellStyle.SOLID_FOREGROUND);
+			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.FILL_FOREGROUND_COLOR, bgColor);
+			HSSFCellUtil.setCellStyleProperty(cell, workbook, CellUtil.FILL_PATTERN,
+					FillPatternType.SOLID_FOREGROUND);
 		}
 	}
 
 	public enum FormatType {
 		TEXT, INTEGER, FLOAT, DATE, MONEY, PERCENTAGE
 	}
+	
+	/**
+	 * how to use
+	 *   ResultSetToExcel resultSetToExcel = new ResultSetToExcel(resultSet,
+			        new ResultSetToExcel.FormatType[] { ResultSetToExcel.FormatType.TEXT, ResultSetToExcel.FormatType.TEXT,
+			            ResultSetToExcel.FormatType.INTEGER, ResultSetToExcel.FormatType.MONEY }, "Employee List");
+			    resultSetToExcel.generate(new File("c:\\employees.xls"));
+	 */
 }
