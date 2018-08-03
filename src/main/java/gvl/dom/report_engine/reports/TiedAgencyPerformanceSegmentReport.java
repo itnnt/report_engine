@@ -11,11 +11,13 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import gvl.dom.report_engine.ReportExtracting;
 import main.utils.MySQLConnect;
 import main.utils.ResultSetToExcel;
 import main.utils.XLSXReadWriteHelper;
@@ -25,6 +27,7 @@ import main.utils.XLSXReadWriteHelper;
  *
  */
 public class TiedAgencyPerformanceSegmentReport {
+	final static Logger logger = Logger.getLogger(TiedAgencyPerformanceSegmentReport.class);
 	String excelTemplate = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_SEGMENTATION_REPORT_template.xlsx";
 	String excelReport = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_SEGMENTATION_REPORT_2018-07-31-RESULT.xlsx";
 
@@ -743,6 +746,9 @@ public class TiedAgencyPerformanceSegmentReport {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(sqlcommand);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
