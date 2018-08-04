@@ -73,7 +73,8 @@ public class XLSXReadWriteHelper {
 		book.close();
 	}
 
-	public ArrayList<Row> read(String excelFileName, String sheetName, int skipRows) throws IOException {
+	
+	public static ArrayList<Row> read(String excelFileName, String sheetName, int skipRows) throws IOException {
 		ArrayList<Row> rows = new ArrayList<Row>();
 		File excel = new File(excelFileName);
 		FileInputStream fis = new FileInputStream(excel);
