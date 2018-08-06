@@ -16,8 +16,11 @@ public class ReportExtracting {
 		
 		TiedAgencyPerformanceSegmentReport tiedAgencyPerformanceSegmentReport = new TiedAgencyPerformanceSegmentReport();
 		
+		if(logger.isInfoEnabled()){
+			logger.info("Updating data for Cover sheet");
+		}
 		tiedAgencyPerformanceSegmentReport.updateCoverSheet(excelTemplate, excelReport, m0End);
-		System.exit(0);
+		
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for Country sheet");
 		}
@@ -32,7 +35,7 @@ public class ReportExtracting {
 			logger.info("Fetching data for South sheet");
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForSouthSheet(excelReport, excelReport, y0, m0End);
-		
+
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for Ending MP_Structure sheet");
 		}
