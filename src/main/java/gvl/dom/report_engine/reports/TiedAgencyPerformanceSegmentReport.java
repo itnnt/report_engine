@@ -47,6 +47,18 @@ public class TiedAgencyPerformanceSegmentReport {
 		final int SECTOR_ENDINGMP_ROWINDEX = 18;
 		final int SECTOR_RECRUITMENT_ROWINDEX = 29;
 		final int SECTOR_ALRECRUITMENTKPIs_ROWINDEX = 39;
+		final int SECTOR_APE_ROWINDEX = 47;
+		final int SECTOR_FYP_ROWINDEX = 195;
+		final int SECTOR_RYP_ROWINDEX = 183;
+		final int SECTOR_APE_CONTRIBUTION_ROWINDEX = 61;
+		final int SECTOR_MANPOWER_ROWINDEX = 74;
+		final int SECTOR_ACTIVE_ROWINDEX = 86;
+		final int SECTOR_CASE_ROWINDEX = 110;
+		final int SECTOR_CASESIZE_ROWINDEX = 122;
+		final int SECTOR_CASEPERACTIVE_ROWINDEX = 134;
+		final int SECTOR_APEPERACTIVE_ROWINDEX = 158;
+		final int SECTOR_APEPERMANPOWER_ROWINDEX = 146;
+		final int SECTOR_ACTIVERATIO_ROWINDEX = 98;
 		final int SECTOR_ROOKIEPERFORMANCE_ROWINDEX = 170;
 		final String SHEET_NAME = "Country";
 
@@ -62,12 +74,13 @@ public class TiedAgencyPerformanceSegmentReport {
 			File fileTemplate = new File(excelTemplate);
 			fis = new FileInputStream(fileTemplate);
 			book = new XSSFWorkbook(fis);
-			CellStyle cellStyle1 = book.createCellStyle();
+			CellStyle cellStylePercentage = book.createCellStyle();
 			CellStyle cellStyle2 = book.createCellStyle();
 			CellStyle cellStyle3 = book.createCellStyle();
 			CreationHelper createHelper = book.getCreationHelper();
 			cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
 			cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			cellStylePercentage.setDataFormat(createHelper.createDataFormat().getFormat("0.0%"));
 
 			// fetch data from the database
 			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
@@ -97,7 +110,110 @@ public class TiedAgencyPerformanceSegmentReport {
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_ALRECRUITMENTKPIs_ROWINDEX,
 					SECTOR_COLUMNINDEX, rs);
-
+			
+			// APE
+			sqlcommand = MessageFormat.format(
+					"call report_ape_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_APE_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// fyp
+			sqlcommand = MessageFormat.format("call report_fyp_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_FYP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// ryp
+			sqlcommand = MessageFormat.format("call report_ryp_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_RYP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// APE contribution
+			sqlcommand = MessageFormat.format(
+					"call report_ape_contribution_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStylePercentage, SHEET_NAME, SECTOR_APE_CONTRIBUTION_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// manpower
+			sqlcommand = MessageFormat.format(
+					"call report_manpower_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_MANPOWER_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// active
+			sqlcommand = MessageFormat.format(
+					"call report_active_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ACTIVE_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// case
+			sqlcommand = MessageFormat.format(
+					"call report_case_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASE_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// casesize
+			sqlcommand = MessageFormat.format(
+					"call report_casesize_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASESIZE_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// case per active
+			sqlcommand = MessageFormat.format(
+					"call report_caseperactive_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASEPERACTIVE_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// ape per active
+			sqlcommand = MessageFormat.format(
+					"call report_apeperactive_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_APEPERACTIVE_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// ape per manpower
+			sqlcommand = MessageFormat.format(
+					"call report_apepermanpower_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_APEPERMANPOWER_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
+			// active ratio
+			sqlcommand = MessageFormat.format("call report_activeratio_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStylePercentage, SHEET_NAME, SECTOR_ACTIVERATIO_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+						
 			// Rookie Performance
 			sqlcommand = MessageFormat.format(
 					"call report_segmentation_rookie_performance_tiedagency(\"{0}\", \"{1}\");", inputPeriodFrom,
@@ -144,6 +260,18 @@ public class TiedAgencyPerformanceSegmentReport {
 		final int SECTOR_ENDINGMP_ROWINDEX = 18;
 		final int SECTOR_RECRUITMENT_ROWINDEX = 29;
 		final int SECTOR_ALRECRUITMENTKPIs_ROWINDEX = 39;
+		final int SECTOR_APE_ROWINDEX = 47;
+		final int SECTOR_FYP_ROWINDEX = 195;
+		final int SECTOR_RYP_ROWINDEX = 183;
+		final int SECTOR_APE_CONTRIBUTION_ROWINDEX = 61;
+		final int SECTOR_MANPOWER_ROWINDEX = 74;
+		final int SECTOR_ACTIVE_ROWINDEX = 86;
+		final int SECTOR_CASE_ROWINDEX = 110;
+		final int SECTOR_CASESIZE_ROWINDEX = 122;
+		final int SECTOR_CASEPERACTIVE_ROWINDEX = 134;
+		final int SECTOR_APEPERMANPOWER_ROWINDEX = 146;
+		final int SECTOR_APEPERACTIVE_ROWINDEX = 158;
+		final int SECTOR_ACTIVERATIO_ROWINDEX = 98;
 		final int SECTOR_ROOKIEPERFORMANCE_ROWINDEX = 170;
 		final String SHEET_NAME = "North";
 
@@ -159,12 +287,13 @@ public class TiedAgencyPerformanceSegmentReport {
 			File fileTemplate = new File(excelTemplate);
 			fis = new FileInputStream(fileTemplate);
 			book = new XSSFWorkbook(fis);
-			CellStyle cellStyle1 = book.createCellStyle();
+			CellStyle cellStylePercentage = book.createCellStyle();
 			CellStyle cellStyle2 = book.createCellStyle();
 			CellStyle cellStyle3 = book.createCellStyle();
 			CreationHelper createHelper = book.getCreationHelper();
 			cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
 			cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			cellStylePercentage.setDataFormat(createHelper.createDataFormat().getFormat("0.0%"));
 
 			// fetch data from the database
 			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
@@ -195,7 +324,93 @@ public class TiedAgencyPerformanceSegmentReport {
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_ALRECRUITMENTKPIs_ROWINDEX,
 					SECTOR_COLUMNINDEX, rs);
+			
+			// APE
+			sqlcommand = MessageFormat.format("call report_ape_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_APE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
+			// fyp
+			sqlcommand = MessageFormat.format("call report_fyp_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_FYP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+
+			// ryp
+			sqlcommand = MessageFormat.format("call report_ryp_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_RYP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// APE contribution
+			sqlcommand = MessageFormat.format("call report_ape_contribution_north(\"{0}\", \"{1}\");",
+					inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStylePercentage, SHEET_NAME, SECTOR_APE_CONTRIBUTION_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+
+			// manpower
+			sqlcommand = MessageFormat.format("call report_manpower_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_MANPOWER_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+						
+			// active
+			sqlcommand = MessageFormat.format("call report_active_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ACTIVE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// case
+			sqlcommand = MessageFormat.format("call report_case_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// casesize
+			sqlcommand = MessageFormat.format("call report_casesize_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASESIZE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// case per active
+			sqlcommand = MessageFormat.format("call report_caseperactive_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASEPERACTIVE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// APE per active
+			sqlcommand = MessageFormat.format("call report_apeperactive_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_APEPERACTIVE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// APE per manpower 
+			sqlcommand = MessageFormat.format("call report_apepermanpower_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_APEPERMANPOWER_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// active ratio
+			sqlcommand = MessageFormat.format("call report_activeratio_north(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStylePercentage, SHEET_NAME, SECTOR_ACTIVERATIO_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+						
 			// Rookie Performance
 			sqlcommand = MessageFormat.format(
 					"call report_segmentation_rookie_performance_tiedagency_north(\"{0}\", \"{1}\");", inputPeriodFrom,
@@ -242,6 +457,18 @@ public class TiedAgencyPerformanceSegmentReport {
 		final int SECTOR_ENDINGMP_ROWINDEX = 18;
 		final int SECTOR_RECRUITMENT_ROWINDEX = 29;
 		final int SECTOR_ALRECRUITMENTKPIs_ROWINDEX = 39;
+		final int SECTOR_APE_ROWINDEX = 47;
+		final int SECTOR_FYP_ROWINDEX = 195;
+		final int SECTOR_RYP_ROWINDEX = 183;
+		final int SECTOR_APE_CONTRIBUTION_ROWINDEX = 61;
+		final int SECTOR_MANPOWER_ROWINDEX = 74;
+		final int SECTOR_ACTIVE_ROWINDEX = 86;
+		final int SECTOR_CASE_ROWINDEX = 110;
+		final int SECTOR_CASESIZE_ROWINDEX = 122;
+		final int SECTOR_CASEPERACTIVE_ROWINDEX = 134;
+		final int SECTOR_APEPERMANPOWER_ROWINDEX = 146;
+		final int SECTOR_APEPERACTIVE_ROWINDEX = 158;
+		final int SECTOR_ACTIVERATIO_ROWINDEX = 98;
 		final int SECTOR_ROOKIEPERFORMANCE_ROWINDEX = 170;
 		final String SHEET_NAME = "South";
 
@@ -257,12 +484,13 @@ public class TiedAgencyPerformanceSegmentReport {
 			File fileTemplate = new File(excelTemplate);
 			fis = new FileInputStream(fileTemplate);
 			book = new XSSFWorkbook(fis);
-			CellStyle cellStyle1 = book.createCellStyle();
+			CellStyle cellStylePercentage = book.createCellStyle();
 			CellStyle cellStyle2 = book.createCellStyle();
 			CellStyle cellStyle3 = book.createCellStyle();
 			CreationHelper createHelper = book.getCreationHelper();
 			cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
 			cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			cellStylePercentage.setDataFormat(createHelper.createDataFormat().getFormat("0.0%"));
 
 			// fetch data from the database
 			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
@@ -294,6 +522,93 @@ public class TiedAgencyPerformanceSegmentReport {
 			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_ALRECRUITMENTKPIs_ROWINDEX,
 					SECTOR_COLUMNINDEX, rs);
 
+			// APE
+			sqlcommand = MessageFormat.format("call report_ape_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_APE_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+
+			// fyp
+			sqlcommand = MessageFormat.format("call report_fyp_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_FYP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// ryp
+			sqlcommand = MessageFormat.format("call report_ryp_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_RYP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+
+			// APE contribution
+			sqlcommand = MessageFormat.format("call report_ape_contribution_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStylePercentage, SHEET_NAME, SECTOR_APE_CONTRIBUTION_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+
+			// manpower
+			sqlcommand = MessageFormat.format("call report_manpower_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_MANPOWER_ROWINDEX, SECTOR_COLUMNINDEX, rs);			
+			
+			// active
+			sqlcommand = MessageFormat.format("call report_active_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ACTIVE_ROWINDEX, SECTOR_COLUMNINDEX, rs);			
+			
+			// case
+			sqlcommand = MessageFormat.format("call report_case_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASE_ROWINDEX, SECTOR_COLUMNINDEX, rs);			
+			
+			// casesize
+			sqlcommand = MessageFormat.format("call report_casesize_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASESIZE_ROWINDEX, SECTOR_COLUMNINDEX, rs);			
+			
+			// case per active
+			sqlcommand = MessageFormat.format("call report_caseperactive_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_CASEPERACTIVE_ROWINDEX, SECTOR_COLUMNINDEX, rs);			
+			
+			// APE per active
+			sqlcommand = MessageFormat.format("call report_apeperactive_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_APEPERACTIVE_ROWINDEX, SECTOR_COLUMNINDEX, rs);			
+			
+			// APE per manpower
+			sqlcommand = MessageFormat.format("call report_apepermanpower_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle3, SHEET_NAME, SECTOR_APEPERMANPOWER_ROWINDEX, SECTOR_COLUMNINDEX,
+					rs);
+					
+			// active ratio
+			sqlcommand = MessageFormat.format("call report_activeratio_south(\"{0}\", \"{1}\");", inputPeriodFrom,
+					inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStylePercentage, SHEET_NAME, SECTOR_ACTIVERATIO_ROWINDEX,
+					SECTOR_COLUMNINDEX, rs);
+			
 			// Rookie Performance
 			sqlcommand = MessageFormat.format(
 					"call report_segmentation_rookie_performance_tiedagency_south(\"{0}\", \"{1}\");", inputPeriodFrom,

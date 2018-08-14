@@ -36,6 +36,8 @@ public class ReportExtracting {
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForSouthSheet(excelReport, excelReport, y0, m0End);
 
+		System.exit(0);
+		
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for Ending MP_Structure sheet");
 		}
