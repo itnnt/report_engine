@@ -436,6 +436,11 @@ public class XLSXReadWriteHelper {
 					newCell.setCellValue(((Double) element));
 					if (null != cellStyle) newCell.setCellStyle(cellStyle);
 					continue; //for
+				} else if (element instanceof Long) {
+					Long l = (Long) element;
+					newCell.setCellValue(l.doubleValue());
+					if (null != cellStyle) newCell.setCellStyle(cellStyle);
+					continue; //for
 				}
 			}
 			++rownum;

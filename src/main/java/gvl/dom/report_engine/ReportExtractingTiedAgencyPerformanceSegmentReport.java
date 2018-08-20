@@ -4,8 +4,8 @@ import org.apache.log4j.Logger;
 
 import gvl.dom.report_engine.reports.TiedAgencyPerformanceSegmentReport;
 
-public class ReportExtracting {
-	final static Logger logger = Logger.getLogger(ReportExtracting.class);
+public class ReportExtractingTiedAgencyPerformanceSegmentReport {
+	final static Logger logger = Logger.getLogger(ReportExtractingTiedAgencyPerformanceSegmentReport.class);
 	public static void main(String[] args) {
 		String excelTemplate = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_SEGMENTATION_REPORT_template.xlsx";
 		String excelReport = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_SEGMENTATION_REPORT_2018-07-31-RESULT.xlsx";

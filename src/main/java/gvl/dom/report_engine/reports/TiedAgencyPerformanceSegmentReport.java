@@ -27,7 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import gvl.dom.report_engine.ReportExtracting;
+import gvl.dom.report_engine.ReportExtractingTiedAgencyPerformanceSegmentReport;
 import main.utils.MySQLConnect;
 import main.utils.ResultSetToExcel;
 import main.utils.XLSXReadWriteHelper;
