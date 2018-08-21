@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -968,6 +969,7 @@ public class TiedAgencyPerformanceReport {
 			}
 		}
 	}
+	
 	public void fetchDataForDataActiveMomSheet(String excelTemplate, String excelReport, String sheetname, String inputPeriodFrom,
 			String inputPeriodTo, int rowindex) {
 		final int SECTOR_COLUMNINDEX = -1;
@@ -1000,6 +1002,275 @@ public class TiedAgencyPerformanceReport {
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_active_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// write to the new file
+			File fileSavedTo = new File(excelReport);
+			// open an OutputStream to save written data into Excel file
+			fos = new FileOutputStream(fileSavedTo);
+			book.write(fos);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// Close workbook, OutputStream and Excel file to prevent leak
+			try {
+				fos.close();
+				book.close();
+				fis.close();
+				mySQLConnect.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void fetchDataForDataMPbyDesignationSheet(String excelTemplate, String excelReport, String inputPeriodFrom,
+			String inputPeriodTo) {
+		final int SECTOR_COLUMNINDEX = -1;
+		final int SECTOR_ENDINGMP_ROWINDEX = 0;
+		final String sheetname = "group_manpower_by_desc_monthly";
+		
+		FileInputStream fis = null;
+		XSSFWorkbook book = null;
+		FileOutputStream fos = null;
+		MySQLConnect mySQLConnect = null;
+		String sqlcommand = null;
+		ResultSet rs = null;
+		
+		try {
+			// open the template
+			File fileTemplate = new File(excelTemplate);
+			fis = new FileInputStream(fileTemplate);
+			book = new XSSFWorkbook(fis);
+			// CellStyle cellStyle1 = book.createCellStyle();
+			// CellStyle cellStyle2 = book.createCellStyle();
+			CellStyle cellStyle2 = null;
+			// CellStyle cellStyle3 = book.createCellStyle();
+			// CreationHelper createHelper = book.getCreationHelper();
+			// cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
+			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			
+			// ending manpower
+			sqlcommand = MessageFormat.format("call report_dynamic_man_power_by_designation_alllevels(\"{0}\", \"{1}\" );",
+					inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// write to the new file
+			File fileSavedTo = new File(excelReport);
+			// open an OutputStream to save written data into Excel file
+			fos = new FileOutputStream(fileSavedTo);
+			book.write(fos);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// Close workbook, OutputStream and Excel file to prevent leak
+			try {
+				fos.close();
+				book.close();
+				fis.close();
+				mySQLConnect.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public void fetchDataForDataRecruitmentSheet(String excelTemplate, String excelReport, String inputPeriodFrom,
+			String inputPeriodTo) {
+		final int SECTOR_COLUMNINDEX = -1;
+		final int SECTOR_ENDINGMP_ROWINDEX = 0;
+		final String sheetname = "recruitment_monthly";
+		
+		FileInputStream fis = null;
+		XSSFWorkbook book = null;
+		FileOutputStream fos = null;
+		MySQLConnect mySQLConnect = null;
+		String sqlcommand = null;
+		ResultSet rs = null;
+		
+		try {
+			// open the template
+			File fileTemplate = new File(excelTemplate);
+			fis = new FileInputStream(fileTemplate);
+			book = new XSSFWorkbook(fis);
+			// CellStyle cellStyle1 = book.createCellStyle();
+			// CellStyle cellStyle2 = book.createCellStyle();
+			CellStyle cellStyle2 = null;
+			// CellStyle cellStyle3 = book.createCellStyle();
+			// CreationHelper createHelper = book.getCreationHelper();
+			// cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
+			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			
+			// ending manpower
+			sqlcommand = MessageFormat.format("call report_dynamic_recruitment_by_designation_alllevels(\"{0}\", \"{1}\" );",
+					inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// write to the new file
+			File fileSavedTo = new File(excelReport);
+			// open an OutputStream to save written data into Excel file
+			fos = new FileOutputStream(fileSavedTo);
+			book.write(fos);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// Close workbook, OutputStream and Excel file to prevent leak
+			try {
+				fos.close();
+				book.close();
+				fis.close();
+				mySQLConnect.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public void fetchDataForDataRecruitmentActiveALSheet(String excelTemplate, String excelReport, String inputPeriodFrom,
+			String inputPeriodTo) {
+		final int SECTOR_COLUMNINDEX = -1;
+		final int SECTOR_ENDINGMP_ROWINDEX = 0;
+		final String sheetname = "active_recruit_leader_monthly";
+		
+		FileInputStream fis = null;
+		XSSFWorkbook book = null;
+		FileOutputStream fos = null;
+		MySQLConnect mySQLConnect = null;
+		String sqlcommand = null;
+		ResultSet rs = null;
+		
+		try {
+			// open the template
+			File fileTemplate = new File(excelTemplate);
+			fis = new FileInputStream(fileTemplate);
+			book = new XSSFWorkbook(fis);
+			// CellStyle cellStyle1 = book.createCellStyle();
+			// CellStyle cellStyle2 = book.createCellStyle();
+			CellStyle cellStyle2 = null;
+			// CellStyle cellStyle3 = book.createCellStyle();
+			// CreationHelper createHelper = book.getCreationHelper();
+			// cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
+			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			
+			// ending manpower
+			sqlcommand = MessageFormat.format("call report_dynamic_activealrecruit_alllevels(\"{0}\", \"{1}\" );",
+					inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			// write the result set to the excel
+			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
+			
+			// write to the new file
+			File fileSavedTo = new File(excelReport);
+			// open an OutputStream to save written data into Excel file
+			fos = new FileOutputStream(fileSavedTo);
+			book.write(fos);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// Close workbook, OutputStream and Excel file to prevent leak
+			try {
+				fos.close();
+				book.close();
+				fis.close();
+				mySQLConnect.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public void fetchDataForDataRookie90daysSheet(String excelTemplate, String excelReport, String inputPeriodFrom,
+			String inputPeriodTo) {
+		final int SECTOR_COLUMNINDEX = -1;
+		final int SECTOR_ENDINGMP_ROWINDEX = 0;
+		final String sheetname = "data_rookie90days";
+		
+		FileInputStream fis = null;
+		XSSFWorkbook book = null;
+		FileOutputStream fos = null;
+		MySQLConnect mySQLConnect = null;
+		String sqlcommand = null;
+		ResultSet rs = null;
+		
+		try {
+			// open the template
+			File fileTemplate = new File(excelTemplate);
+			fis = new FileInputStream(fileTemplate);
+			book = new XSSFWorkbook(fis);
+			// CellStyle cellStyle1 = book.createCellStyle();
+			// CellStyle cellStyle2 = book.createCellStyle();
+			CellStyle cellStyle2 = null;
+			// CellStyle cellStyle3 = book.createCellStyle();
+			// CreationHelper createHelper = book.getCreationHelper();
+			// cellStyle2.setDataFormat(createHelper.createDataFormat().getFormat("#,##0"));
+			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
+			
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			
+			// ending manpower
+			sqlcommand = MessageFormat.format("call report_dynamic_rookie_performance_tiedagency_alllevels(\"{0}\", \"{1}\" );",
+					inputPeriodFrom, inputPeriodTo);
 			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
