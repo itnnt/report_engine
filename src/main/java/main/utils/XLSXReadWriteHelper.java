@@ -43,6 +43,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -382,7 +383,8 @@ public class XLSXReadWriteHelper {
 	public static String write(XSSFWorkbook book, CellStyle cellStyle, String sheetName, int rownum, int colnum, ResultSet rows)
 			throws IOException, SQLException {
 		XSSFSheet sheet = book.getSheet(sheetName);
-
+		// Refreshing all the formulas in a sheet
+		sheet.setForceFormulaRecalculation(true);
 		// get total column count from the result set rows
 		int numberOfcols = rows.getMetaData().getColumnCount();
 		// loop through each row
@@ -445,6 +447,7 @@ public class XLSXReadWriteHelper {
 			}
 			++rownum;
 		}
+		
 		return rownum + ":" + colnum;
 	}
 	
