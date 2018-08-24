@@ -1588,8 +1588,7 @@ public class TiedAgencyPerformanceReport {
 		}
 	}
 
-	public void fetchDataForAPESegDtlSheet(String excelTemplate, String excelReport, String inputPeriodFrom,
-			String inputPeriodTo) {
+	public void fetchDataForAPESegDtlSheet(String excelTemplate, String excelReport, String inputPeriodFrom, String inputPeriodTo) {
 		final int SECTOR_COLUMNINDEX = -1;
 		final int SECTOR_ENDINGMP_ROWINDEX = 0;
 		final String sheetname = "data_detail_in_segment_ape";
@@ -2643,4 +2642,242 @@ public class TiedAgencyPerformanceReport {
 			} 
 		}
 	}
+	
+	public void fetchDataForSheet_active_total(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom, String inputPeriodTo) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_active_tt(\"{0}\", \"{1}\" , 7);",inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	}
+	public void fetchDataForSheetPlanAPEtotal(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_ape(\"{0}\", 7);",inputPeriodFrom);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public void fetchDataForSheetPlanFYPtotal(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_fyp(\"{0}\", 8);",inputPeriodFrom);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public void fetchDataForSheetPlanCscnttotal(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_cscnt(\"{0}\", 9);",inputPeriodFrom);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public void fetchDataForSheetPlanNewAgenttotal(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_newagents(\"{0}\", 10);",inputPeriodFrom);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public void fetchDataForSheetPlanMPtotal(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_mp(\"{0}\", 11);",inputPeriodFrom);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void fetchDataForSheetPlanAPEtotalYTD(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom, String inputPeriodTo) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_ape_ytd(\"{0}\", \"{1}\", 7);",inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void fetchDataForSheetPlanFYPtotalYTD(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom, String inputPeriodTo) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_fyp_ytd(\"{0}\", \"{1}\", 8);",inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void fetchDataForSheetPlanCSCNTtotalYTD(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom, String inputPeriodTo) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_cscnt_ytd(\"{0}\", \"{1}\", 9);",inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void fetchDataForSheetPlanNewAgentsttotalYTD(String excelTemplate, String excelReport, String sheetname,
+			String inputPeriodFrom, String inputPeriodTo) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Fetching data for sheet: " + sheetname);
+		}
+		try {
+			MySQLConnect mySQLConnect = null;
+			String sqlcommand = null;
+			ResultSet rs = null;
+			// fetch data from the database
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
+			// ending manpower
+			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_newagents_ytd(\"{0}\", \"{1}\", 10);",inputPeriodFrom, inputPeriodTo);
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
+			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
+			mySQLConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

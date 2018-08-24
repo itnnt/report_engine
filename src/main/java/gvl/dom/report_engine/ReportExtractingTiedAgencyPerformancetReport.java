@@ -43,6 +43,19 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		tiedAgencyPerformanceSegmentReport.fetchDataForAPESegDtlSheet(excelReport, excelReport, m0Start, m0End);
 		/* --------------------------------------------------------------------------------- */
 		/* --------------------------------------------------------------------------------- */
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheet_active_total(excelReport, excelReport, "activey1",  y1, y1End);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheet_active_total(excelReport, excelReport, "activey0",  y0, m0End);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAPEtotal(excelReport, excelReport, "data_ape_target_currentmonth",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanFYPtotal(excelReport, excelReport, "data_fyp_target_currentmonth",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCscnttotal(excelReport, excelReport, "data_case_target_currentmonth",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanNewAgenttotal(excelReport, excelReport, "data_newag_target_currentmonth",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanMPtotal(excelReport, excelReport, "data_mp_target_currentmonth",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAPEtotalYTD(excelReport, excelReport, "ape_target_ytd",  y0, m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanFYPtotalYTD(excelReport, excelReport, "fyp_target_ytd",  y0, m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCSCNTtotalYTD(excelReport, excelReport, "case_target_ytd",  y0, m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanNewAgentsttotalYTD(excelReport, excelReport, "newrecruit_target_ytd",  y0, m0Start);
+		/* --------------------------------------------------------------------------------- */
+		/* --------------------------------------------------------------------------------- */
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for data_detail_in_segment_manpower sheet");
 		}
@@ -60,15 +73,18 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForActiveSegDtlSheet(excelReport, excelReport, m0Start, m0End);
 		/* --------------------------------------------------------------------------------- */
+		/* --------------------------------------------------------------------------------- */
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for data_detail_seg_chart_y0_ape sheet");
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheet_data_detail_seg_chart_y0_ape(excelReport, excelReport, y0, m0End);
-		
+		/* --------------------------------------------------------------------------------- */
+		/* --------------------------------------------------------------------------------- */
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for data_detail_seg_chart_y0_mp sheet");
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheet_data_detail_seg_chart_y0_mp(excelReport, excelReport, y0, m0End);
+		/* --------------------------------------------------------------------------------- */
 		
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for data_detail_seg_chart_y0_case sheet");
@@ -151,6 +167,7 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheet_data_apeperactive_total(excelReport, excelReport, "ape_per_active_monthly",y0, m0End);
 		
+		System.exit(0);
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for 6.0 GA Performance sheet");
 		}
