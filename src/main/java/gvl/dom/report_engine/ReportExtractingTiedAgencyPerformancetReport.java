@@ -50,10 +50,26 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCscnttotal(excelReport, excelReport, "data_case_target_currentmonth",  m0Start);
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanNewAgenttotal(excelReport, excelReport, "data_newag_target_currentmonth",  m0Start);
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanMPtotal(excelReport, excelReport, "data_mp_target_currentmonth",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAR(excelReport, excelReport, "current_month_actratio_target",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAR(excelReport, excelReport, "actratio_target_ytd",  m0Start);
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAPEtotalYTD(excelReport, excelReport, "ape_target_ytd",  y0, m0Start);
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanFYPtotalYTD(excelReport, excelReport, "fyp_target_ytd",  y0, m0Start);
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCSCNTtotalYTD(excelReport, excelReport, "case_target_ytd",  y0, m0Start);
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanNewAgentsttotalYTD(excelReport, excelReport, "newrecruit_target_ytd",  y0, m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCasesize(excelReport, excelReport, "current_month_casesize_target",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCasesize(excelReport, excelReport, "casesize_target_ytd",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCasePAct(excelReport, excelReport, "crt_mth_caseperactive_target",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanCasePAct(excelReport, excelReport, "caseperactive_target_ytd",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanApePAct(excelReport, excelReport, "crt_mth_apeperactive_target",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanApePAct(excelReport, excelReport, "apeperactive_target_ytd",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAct(excelReport, excelReport, "data_active_agents_mom",  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanActiveYTD(excelReport, excelReport, "active_target_ytd",  y0,  m0Start);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanAPEYTD(excelReport, excelReport, "data_ape_target",  y0,  y0End);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanMPYTD(excelReport, excelReport, "monthly_mp_target",  y0,  y0End);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetPlanNewAgentsYTD(excelReport, excelReport, "newrecruit_target_monthly_ytd",  y0,  y0End);
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetAdlist(excelReport, excelReport, "ADList");
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetSalesChart(excelReport, excelReport, "Sales Chart");
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetUserReport(excelReport, excelReport, "users");
 		/* --------------------------------------------------------------------------------- */
 		/* --------------------------------------------------------------------------------- */
 		if(logger.isInfoEnabled()){
@@ -167,7 +183,6 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForSheet_data_apeperactive_total(excelReport, excelReport, "ape_per_active_monthly",y0, m0End);
 		
-		System.exit(0);
 		if(logger.isInfoEnabled()){
 			logger.info("Fetching data for 6.0 GA Performance sheet");
 		}
