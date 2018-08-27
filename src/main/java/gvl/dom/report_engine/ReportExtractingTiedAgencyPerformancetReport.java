@@ -31,6 +31,12 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		TiedAgencyPerformanceReport tiedAgencyPerformanceSegmentReport = new TiedAgencyPerformanceReport();
 		/* --------------------------------------------------------------------------------- */
 		/* --------------------------------------------------------------------------------- */
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetAdlist(excelReport, excelReport, "ADList");
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetSalesChart(excelReport, excelReport, "Sales Chart");
+		tiedAgencyPerformanceSegmentReport.fetchDataForSheetUserReport(excelReport, excelReport, "users");
+		System.exit(0);
+		/* --------------------------------------------------------------------------------- */
+		/* --------------------------------------------------------------------------------- */
 		if(logger.isInfoEnabled()){
 			logger.info("Updating data for Cover sheet");
 		}

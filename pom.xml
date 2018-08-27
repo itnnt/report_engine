@@ -74,4 +74,79 @@
 		</dependency>
 
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>build-classpath</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>build-classpath</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<!-- 
+			<resource>
+				<directory>./</directory>
+				<targetPath>${project.build.directory}</targetPath>
+				<includes>
+					<include> **/*.properties</include>
+					<include> **/*.txt</include>
+					<include> **/*.jpg</include>
+					<include> **/*.jar</include>
+					<include> **/*.bat</include>
+				</includes>
+			</resource>
+			 -->
+			 <!-- 
+			<resource>
+				<directory>./jre</directory>
+				<targetPath>${project.build.directory}/jre</targetPath>
+				<includes>
+					<include> **/*</include>
+				</includes>
+			</resource> -->
+			<!-- 
+			<resource>
+				<directory>./src/main/resources</directory>
+				<targetPath>${project.build.directory}</targetPath>
+				<includes>
+					<include> **/*</include>
+				</includes>
+			</resource>
+			 -->
+			
+			<!-- loi khi build bang eclipse:eclipse - khong dung bien project.build.directory -->
+			<resource>
+				<directory>./bin</directory>
+				<targetPath>${project.build.directory}/bin</targetPath>
+				<includes>
+					<include> **/*.bat</include>
+					<include> **/*.sh</include>
+					<include> **/*.xml</include>
+					<include> **/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

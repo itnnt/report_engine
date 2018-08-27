@@ -3124,7 +3124,7 @@ public class TiedAgencyPerformanceReport {
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_getsaleschart();", "", "");
 			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
-			writeDataForSheet(excelReport, excelReport, sheetname, -1, 3, rs);
+			writeDataForSheet(excelReport, excelReport, sheetname, 2, 0, rs);
 			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
