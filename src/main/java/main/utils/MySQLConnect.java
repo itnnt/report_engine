@@ -24,7 +24,7 @@ public class MySQLConnect {
 		this.username = username;
 		this.password = password;
 		this.schemeName = schemeName;
-		this.url = "jdbc:mysql://" + serverName + ":" + port + "/" + schemeName + "?autoReconnect=true&useSSL=false";
+		this.url = "jdbc:mysql://" + serverName + ":" + port + "/" + schemeName + "?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false";
 	}
 
 	public void connect(boolean autoCommit) throws Exception {
