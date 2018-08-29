@@ -1,12 +1,23 @@
 package gvl.dom.report_engine;
 
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 import gvl.dom.report_engine.reports.TiedAgencyPerformanceSegmentReport;
+import main.utils.Utils;
 
 public class ReportExtractingTiedAgencyPerformanceSegmentReport {
 	final static Logger logger = Logger.getLogger(ReportExtractingTiedAgencyPerformanceSegmentReport.class);
 	public static void main(String[] args) {
+//		Properties systemProperties = Utils.loadSystemProperties("config_report_tiedagency_performance.properties");
+//		String excelTemplate = systemProperties.getProperty("excelTemplate");
+//		String excelReport = systemProperties.getProperty("excelReport");
+//		String y1 = systemProperties.getProperty("y1");
+//		String y0 = systemProperties.getProperty("y0");
+//		String y0End = systemProperties.getProperty("y0End");
+//		String m0End = systemProperties.getProperty("m0End");
+		
 		String excelTemplate = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_SEGMENTATION_REPORT_template.xlsx";
 		String excelReport = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_SEGMENTATION_REPORT_2018-07-31-RESULT.xlsx";
 		String y1 = "2017-01-01";
@@ -82,6 +93,10 @@ public class ReportExtractingTiedAgencyPerformanceSegmentReport {
 			logger.info("Fetching data for Agent_retention sheet");
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForRetentionSheet(excelReport, excelReport, m0End);
+		
+		if(logger.isInfoEnabled()){
+			logger.info("=== DONE ===");
+		}
 	}
 
 }

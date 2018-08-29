@@ -1,13 +1,36 @@
 package gvl.dom.report_engine;
 
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 import gvl.dom.report_engine.reports.TiedAgencyPerformanceReport;
+import main.utils.Utils;
 
 public class ReportExtractingTiedAgencyPerformancetReport {
 	final static Logger logger = Logger.getLogger(ReportExtractingTiedAgencyPerformancetReport.class);
 	public static void main(String[] args) {
-		String excelTemplate = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_PERFORMANCE_REPORT_dynamic_template.xlsm";
+		Properties systemProperties = Utils.loadSystemProperties("config_report_tiedagency_performance.properties");
+		String excelTemplate = systemProperties.getProperty("excelTemplate");
+		String excelReport = systemProperties.getProperty("excelReport");
+		System.out.println(excelTemplate);
+		System.out.println(excelReport);
+		System.out.println("-----------------------------------------");
+		// Ngày đầu tiên của năm liền trước năm hiện tại
+		String y1 = systemProperties.getProperty("y1");
+		// Ngày cuối cùng của năm liền trước năm hiện tại
+		String y1End = systemProperties.getProperty("y1End");
+		// Ngày đầu tiên của năm hiện tại
+		String y0 = systemProperties.getProperty("y0");
+		// Ngày cuối cùng của năm hiện tại
+		String y0End = systemProperties.getProperty("y0End");
+		// Ngày đầu tiên của tháng chạy report
+		String m0Start = systemProperties.getProperty("m0Start");
+		// Ngày cuối cùng của tháng chạy report
+		String m0End = systemProperties.getProperty("m0End");
+		
+		
+		/*String excelTemplate = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_PERFORMANCE_REPORT_dynamic_template.xlsm";
 		String excelReport = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_PERFORMANCE_REPORT_dynamic_2018-07-31-RESULT.xlsm";
 		
 		// Ngày đầu tiên của năm liền trước năm hiện tại
@@ -26,15 +49,11 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		String m0Start = "2018-07-01";
 		
 		// Ngày cuối cùng của tháng chạy report
-		String m0End = "2018-07-31";
+		String m0End = "2018-07-31";*/
+
+		
 		
 		TiedAgencyPerformanceReport tiedAgencyPerformanceSegmentReport = new TiedAgencyPerformanceReport();
-		/* --------------------------------------------------------------------------------- */
-		/* --------------------------------------------------------------------------------- */
-		tiedAgencyPerformanceSegmentReport.fetchDataForSheetAdlist(excelReport, excelReport, "ADList");
-		tiedAgencyPerformanceSegmentReport.fetchDataForSheetSalesChart(excelReport, excelReport, "Sales Chart");
-		tiedAgencyPerformanceSegmentReport.fetchDataForSheetUserReport(excelReport, excelReport, "users");
-		System.exit(0);
 		/* --------------------------------------------------------------------------------- */
 		/* --------------------------------------------------------------------------------- */
 		if(logger.isInfoEnabled()){
@@ -339,6 +358,10 @@ public class ReportExtractingTiedAgencyPerformancetReport {
 		}
 		tiedAgencyPerformanceSegmentReport.fetchDataForProductMixCountSheet(excelReport, excelReport, y0, m0End);
 		
+		
+		if(logger.isInfoEnabled()){
+			logger.info("=== DONE ===");
+		}
 	}
 
 }

@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -15,8 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-
-import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -33,7 +29,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import gvl.dom.report_engine.ReportExtractingTiedAgencyPerformanceSegmentReport;
-import main.utils.ConnectionPool;
 import main.utils.MySQLConnect;
 import main.utils.ResultSetToExcel;
 import main.utils.XLSXReadWriteHelper;
@@ -42,24 +37,11 @@ import main.utils.XLSXReadWriteHelper;
  * Hello world!
  *
  */
-public class TiedAgencyPerformanceReport {
-	final static Logger logger = Logger.getLogger(TiedAgencyPerformanceReport.class);
+public class TiedAgencyPerformanceReportV2 {
+	final static Logger logger = Logger.getLogger(TiedAgencyPerformanceReportV2.class);
 //	String excelTemplate = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_PERFORMANCE_REPORT_dynamic_template.xls";
 //	String excelReport = "E:\\eclipse-workspace\\report_engine\\src\\main\\resources\\MONTHLY_AGENCY_PERFORMANCE_REPORT_dynamic_2018-07-31-RESULT.xls";
-	
-	DataSource dataSource;
-	ConnectionPool jdbcObj;
-	public TiedAgencyPerformanceReport() {
-		jdbcObj = new ConnectionPool();
-		try {
-			dataSource = jdbcObj.setUpPool();
-			jdbcObj.printDbStatus();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
+
 	public void fetchDataForGASheet(String excelTemplate, String excelReport, String inputPeriodFrom,
 			String inputPeriodTo) {
 		final int SECTOR_COLUMNINDEX = -1;
@@ -69,9 +51,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -87,13 +69,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_ga_performance(\"{0}\", \"{1}\");", inputPeriodFrom,
 					inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -118,17 +100,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -199,9 +171,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -217,13 +189,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_ape_alllevels(\"{0}\", \"{1}\", {2});", inputPeriodFrom,
 					inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -248,17 +220,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -276,9 +238,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -294,13 +256,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_fyp_alllevels(\"{0}\", \"{1}\", {2});", inputPeriodFrom,
 					inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetName, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -325,17 +287,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -353,9 +305,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -371,13 +323,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_casecount_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -402,17 +354,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -430,9 +372,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -448,13 +390,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_newrecruit_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -479,17 +421,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -508,9 +440,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -526,13 +458,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_manpower_alllevels(\"{0}\", \"{1}\", {2});", inputPeriodFrom,
 					inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -557,17 +489,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -586,9 +508,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -604,13 +526,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_activeratio_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -635,17 +557,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -664,9 +576,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -682,13 +594,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_activeratio_alllevels_ytd(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -713,17 +625,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -742,9 +644,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -760,13 +662,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_activeratio_saexcle_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -791,17 +693,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -820,9 +712,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -838,14 +730,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call report_activeratio_sa_excluded_alllevels_ytd(\"{0}\", \"{1}\", {2});", inputPeriodFrom,
 					inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, SHEET_NAME, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -870,17 +762,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -898,9 +780,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -916,13 +798,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_casesize_alllevels(\"{0}\", \"{1}\", {2});", inputPeriodFrom,
 					inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -947,17 +829,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -975,9 +847,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -993,13 +865,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_caseperactive_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1024,17 +896,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1052,9 +914,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1070,13 +932,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_apeperactive_alllevels(\"{0}\", \"{1}\", {2});",
 					inputPeriodFrom, inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1101,17 +963,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1129,9 +981,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1147,13 +999,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_active_alllevels(\"{0}\", \"{1}\", {2});", inputPeriodFrom,
 					inputPeriodTo, rowindex);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1178,17 +1030,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1207,9 +1049,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1225,14 +1067,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call report_dynamic_man_power_by_designation_alllevels(\"{0}\", \"{1}\" );", inputPeriodFrom,
 					inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1257,17 +1099,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1286,9 +1118,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1304,14 +1136,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call report_dynamic_recruitment_by_designation_alllevels(\"{0}\", \"{1}\" );", inputPeriodFrom,
 					inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1336,17 +1168,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1365,9 +1187,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1383,13 +1205,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_dynamic_activealrecruit_alllevels(\"{0}\", \"{1}\" );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1414,17 +1236,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1443,9 +1255,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1461,14 +1273,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call report_dynamic_rookie_performance_tiedagency_alllevels(\"{0}\", \"{1}\" );", inputPeriodFrom,
 					inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1493,17 +1305,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1522,9 +1324,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1540,13 +1342,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_product_mix_group_level(\"{0}\", \"{1}\" );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1571,17 +1373,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1600,9 +1392,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1618,13 +1410,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_product_mix_group_level_rider_v1(\"{0}\", \"{1}\" );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1649,17 +1441,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1678,9 +1460,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1696,13 +1478,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call report_product_mix_group_level_total(\"{0}\", \"{1}\" );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1727,17 +1509,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1756,9 +1528,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1774,14 +1546,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call report_product_mix_group_level_rider_v1_count_products(\"{0}\", \"{1}\" );", inputPeriodFrom,
 					inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1806,17 +1578,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1834,9 +1596,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1852,13 +1614,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_ape_report_dynamic(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1883,17 +1645,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1912,9 +1664,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -1930,13 +1682,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_mp_report_dynamic(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -1961,17 +1713,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1990,9 +1732,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2008,13 +1750,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_casecount_report_dynamic(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2039,17 +1781,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2068,9 +1800,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2086,13 +1818,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_active_report_dynamic(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2117,17 +1849,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2146,9 +1868,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2164,14 +1886,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call tiedagency_report_dynamic_sheet_data_detail_seg_chart_y0_ape(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2196,17 +1918,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2225,9 +1937,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2243,14 +1955,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call tiedagency_report_dynamic_sheet_data_detail_seg_chart_y0_mp(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2275,17 +1987,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2304,9 +2006,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2322,14 +2024,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call tiedagency_report_dynamic_sheet_data_detail_seg_chart_y0_case(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2354,17 +2056,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2383,9 +2075,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2401,14 +2093,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call tiedagency_report_dynamic_sheet_data_detail_seg_chart_y0_active(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2433,17 +2125,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2461,9 +2143,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2479,14 +2161,14 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format(
 					"call tiedagency_report_dynamic_sheet_data_detail_seg_chart_y0_mp_tt(\"{0}\", \"{1}\" , 7);",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2511,17 +2193,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2539,9 +2211,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			// open the template
@@ -2557,13 +2229,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_recruitment_tt(\"{0}\", \"{1}\" );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 
@@ -2588,17 +2260,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2615,9 +2277,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try {
 			// open the template
@@ -2633,13 +2295,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 			
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_ape_tt(\"{0}\", \"{1}\", 3 );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 			
@@ -2664,17 +2326,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2691,9 +2343,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try {
 			// open the template
@@ -2709,13 +2361,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 			
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_activeratio(\"{0}\", \"{1}\", 3 );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 			
@@ -2740,17 +2392,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2767,9 +2409,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try {
 			// open the template
@@ -2785,13 +2427,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 			
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_casesize(\"{0}\", \"{1}\", 3 );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 			
@@ -2816,17 +2458,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2843,9 +2475,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try {
 			// open the template
@@ -2861,13 +2493,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 			
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_case_per_active(\"{0}\", \"{1}\", 3 );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 			
@@ -2892,17 +2524,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2919,9 +2541,9 @@ public class TiedAgencyPerformanceReport {
 		FileInputStream fis = null;
 		XSSFWorkbook book = null;
 		FileOutputStream fos = null;
-		
+		MySQLConnect mySQLConnect = null;
 		String sqlcommand = null;
-		ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try {
 			// open the template
@@ -2937,13 +2559,13 @@ public class TiedAgencyPerformanceReport {
 			// cellStyle3.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.0"));
 			
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_ape_per_active(\"{0}\", \"{1}\", 3 );",
 					inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			// write the result set to the excel
 			XLSXReadWriteHelper.write(book, cellStyle2, sheetname, SECTOR_ENDINGMP_ROWINDEX, SECTOR_COLUMNINDEX, rs);
 			
@@ -2968,17 +2590,7 @@ public class TiedAgencyPerformanceReport {
 				fos.close();
 				book.close();
 				fis.close();
-				if(rs != null) {
-					rs.close();
-				}
-				// Closing PreparedStatement Object
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				// Closing Connection Object
-				if(connObj != null) {
-					connObj.close();
-				}
+				mySQLConnect.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -3037,27 +2649,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_report_dynamic_active_tt(\"{0}\", \"{1}\" , 7);",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3071,27 +2673,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_ape(\"{0}\", 7);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3105,27 +2697,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_fyp(\"{0}\", 8);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3139,27 +2721,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_cscnt(\"{0}\", 9);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3173,27 +2745,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_newagents(\"{0}\", 10);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3207,27 +2769,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_mp(\"{0}\", 11);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3241,27 +2793,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_ape_ytd(\"{0}\", \"{1}\", 7);",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3274,27 +2816,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_fyp_ytd(\"{0}\", \"{1}\", 8);",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3307,27 +2839,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_cscnt_ytd(\"{0}\", \"{1}\", 9);",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3340,27 +2862,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_newagents_ytd(\"{0}\", \"{1}\", 10);",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3374,27 +2886,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_ar(\"{0}\", 7);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3407,27 +2909,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_casesize(\"{0}\", 9);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3440,27 +2932,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_caseperactive(\"{0}\", 10);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3473,27 +2955,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_apeperactive(\"{0}\", 11);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3506,27 +2978,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_active(\"{0}\", 12);",inputPeriodFrom);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3540,27 +3002,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_activeag_ytd(\"{0}\", \"{1}\", 12);",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3573,27 +3025,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_ape_fullyear(\"{0}\", \"{1}\");",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3606,27 +3048,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_mp_fullyear(\"{0}\", \"{1}\");",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3639,27 +3071,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_target_newrecruit_fullyear(\"{0}\", \"{1}\");",inputPeriodFrom, inputPeriodTo);
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3671,27 +3093,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_getadlist();", "", "");
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3703,27 +3115,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_getsaleschart();", "", "");
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, 2, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -3735,27 +3137,17 @@ public class TiedAgencyPerformanceReport {
 			logger.info("Fetching data for sheet: " + sheetname);
 		}
 		try {
-			
+			MySQLConnect mySQLConnect = null;
 			String sqlcommand = null;
-			ResultSet rs = null; Connection connObj = null;	PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			// fetch data from the database
-			
-			connObj = dataSource.getConnection();
+			mySQLConnect = new MySQLConnect("localhost", 3306, "root", "root", "generali");
+			mySQLConnect.connect(true);
 			// ending manpower
 			sqlcommand = MessageFormat.format("call tiedagency_dynamic_getuserreport();", "", "");
-			pstmt = connObj.prepareStatement(sqlcommand); rs = pstmt.executeQuery();
+			rs = mySQLConnect.runStoreProcedureToGetReturn(sqlcommand);
 			writeDataForSheet(excelReport, excelReport, sheetname, -1, 0, rs);
-			if(rs != null) {
-				rs.close();
-			}
-			// Closing PreparedStatement Object
-			if(pstmt != null) {
-				pstmt.close();
-			}
-			// Closing Connection Object
-			if(connObj != null) {
-				connObj.close();
-			}
+			mySQLConnect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
